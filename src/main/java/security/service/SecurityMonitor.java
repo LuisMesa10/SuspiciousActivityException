@@ -42,7 +42,7 @@ public class SecurityMonitor {
         if (password.equals("admin123")) {
             System.out.println("Acceso concedido");
             failedAttempts = 0; // reiniciar contador
-            return true; // ✅ indica éxito
+            return true; // indica éxito
         }
 
         // Caso por defecto: intento fallido pero aún permitido
