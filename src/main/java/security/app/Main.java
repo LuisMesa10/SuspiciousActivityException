@@ -1,37 +1,48 @@
-package com.security.app;
+package security.app;
 
-import com.security.service.SecurityMonitor;
-
+import security.service.SecurityMonitor;
+import security.exception.SuspiciousActivityException;
 import java.util.Scanner;
 
 /**
- * Clase principal que ejecuta el sistema.
- * Simula un entorno interactivo de autenticación
+ * Clase principal del sistema.
+ * Controla la interacción con el usuario y el flujo del programa.
  */
 public class Main {
+
     public static void main(String[] args) {
+
         Scanner scanner = new Scanner(System.in);
 
-        System.out.println("=== SISTEMA DE SEGURIDAD ===");
+        System.out.println("=== Sistema de Seguridad ===");
 
-        //Bucle continuo para simular intentos de Login
-        while (true){
-            try{
-                System.out.println("Ingrese la contraseña");
+        // Bucle que permite múltiples intentos de login
+        while (true) {
+
+            try {
+                System.out.print("Ingrese la contraseña: ");
                 String password = scanner.nextLine();
 
-                //Llamada al sistema de seguridad
-                SecurityMonitor.login(password);
+                // Se llama al método de autenticación
+                boolean success = SecurityMonitor.login(password);
 
-            }catch (SuspiciousActivityException e){
-                //Manejo de la interrupción
-                System.out.println("\n === ALERTA DE SEGURIDAD ===");
+                // Si el login es exitoso, se rompe el ciclo
+                if (success) {
+                    System.out.println("Redireccionando...");
+                    break;
+                }
+
+            } catch (SuspiciousActivityException e) {
+
+                // Manejo de la interrupción de software
+                System.out.println("\n=== ALERTA DE SEGURIDAD ===");
                 System.out.println(e.getMessage());
-                System.out.println("Sistema Bloqueado");
+                System.out.println("Sistema bloqueado.");
 
-                break; //detiene la ejecución
+                break; // se detiene el programa
             }
         }
+
         scanner.close();
     }
 }
