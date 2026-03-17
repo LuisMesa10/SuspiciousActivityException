@@ -1,44 +1,51 @@
-package com.security.service;
-
+package security.service;
+import security.exception.SuspiciousActivityException;
 /**
- * Clase encargada de gestionar la lógica de autenticación
- * y detectar comportamientos sospechosos
+ * Clase encargada de gestionar la autenticación del sistema
+ * y detectar comportamientos sospechosos.
  */
 public class SecurityMonitor {
-    /**
-     * Contador de intentos fallidos.
-     */
-    private static int intentosFallidos = 0;
 
     /**
-     * Límite maximo de intentos permmitidos antes de generar la interrupción
+     * Contador global de intentos fallidos.
      */
-    private static final int maximoIntentos = 3;
+    private static int failedAttempts = 0;
 
     /**
-     * Método que simula el proceso de login.
+     * Número máximo de intentos permitidos antes de generar una interrupción.
+     */
+    private static final int MAX_ATTEMPTS = 3;
+
+    /**
+     * Método que valida la contraseña ingresada por el usuario.
      *
-     * @param password Contraseña ingresada por el Usuario.
-     * @throws SuspiciousActivityException Se lanza cuando se detecta actividad sospechosa.
+     * @param password Contraseña ingresada
+     * @return true si el acceso es correcto, false si es incorrecto
+     * @throws SuspiciousActivityException si se supera el número de intentos permitidos
      */
-    public static void login(String password) throws SuspiciousActivityException {
-        //Validación de contraseña incorrecta
-        if(!password.equals("admin123")){
-            intentosFallidos++;
-            System.out.println("Contraseña Incorrecta. Intento #"+ intentosFallidos + ". \n Tiene 3 intentos.");
+    public static boolean login(String password) throws SuspiciousActivityException {
+
+        // Caso 1: contraseña incorrecta
+        if (!password.equals("admin123")) {
+            failedAttempts++;
+            System.out.println("Contraseña incorrecta. Intento #" + failedAttempts);
         }
 
-        //Condición de interrupción de software
-        if( intentosFallidos >= maximoIntentos){
+        // Caso 2: se supera el número máximo de intentos → interrupción
+        if (failedAttempts >= MAX_ATTEMPTS) {
             throw new SuspiciousActivityException(
-                    "Actividad Sospechosa detectada: demasiados intentos fallidos"
+                    "Actividad sospechosa detectada: demasiados intentos fallidos"
             );
         }
 
-        //Acceso Correcto
-        if(password.equals("admin123")){
+        // Caso 3: contraseña correcta
+        if (password.equals("admin123")) {
             System.out.println("Acceso concedido");
-            intentosFallidos=0; //reinicia contador
+            failedAttempts = 0; // reiniciar contador
+            return true; // ✅ indica éxito
         }
+
+        // Caso por defecto: intento fallido pero aún permitido
+        return false;
     }
 }
