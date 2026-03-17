@@ -1,4 +1,4 @@
-package com.security.exception;
+package security.exception;
 
 /**
  * Excepción personalizada que representa una interrupción de Software
